@@ -1,0 +1,32 @@
+{
+  "name": "cgone-template-cli",
+  "version": "1.0.1",
+  "description": "城管应用开发一部项目模版搭建脚手架",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "wujc",
+  "license": "ISC",
+  "dependencies": {
+    "chalk": "^4.1.0",
+    "commander": "^2.19.0",
+    "inquirer": "^6.2.2"
+  },
+  "keywords": [
+    "cli",
+    "select",
+    "template"
+  ],
+  "bin": {
+    "cgone-template": "bin/select-template.js"
+  },
+  "devDependencies": {
+    "cz-conventional-changelog": "^3.3.0"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  }
+}
