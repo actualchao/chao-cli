@@ -1,7 +1,5 @@
-const { exec } = require('child_process')
 const configs = require('./config.js')
-
-const { spawn } = require('child_process');
+const execa = require('execa');
 
 const inquirer = require('inquirer')
 
@@ -23,22 +21,21 @@ function selectTemplate () {
         message: 'Select template you want to use',
         choices: choices
       }
-    ]).then(({ template, projectName }) => {
+    ]).then(async ({ template, projectName }) => {
       const sshPath = configs[template]
 
-      const childProcess = spawn(
-        'vue',
-        ['create', '--preset', `direct:${sshPath}`, '--clone', `${projectName}`],
-        { stdio: [process.stdin, process.stdout, process.stderr] }
-      );
+      try {
+        await execa(
+          'vue',
+          ['create', '--preset', `direct:${sshPath}`, '--clone', `${projectName}`],
+          { stdio: [process.stdin, process.stdout, process.stderr] }
+        );
 
-      childProcess.on('exit', (code) => {
-        if (code === 0) {
-          resolve()
-        }else{
-          reject()
-        }
-      })
+        resolve()
+      } catch (error) {
+        console.log(error);
+        reject(error)
+      }
     })
   })
 
