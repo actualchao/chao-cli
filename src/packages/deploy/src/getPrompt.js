@@ -25,14 +25,10 @@ module.exports = options => {
       message: `密钥路径，(可以使用绝对路径,使用绝对路径密钥会被拷贝到当前工作目录下的 ${chalk.green('.deploy.private')} 目录中)`,
       validate: async answers => {
         try {
-          console.log();
-          console.log(path.resolve(answers));
-          console.log('--------------');
           let res = await require('fs').statSync(path.resolve(answers))
-          console.log(res.isDirectory());
           return !res.isDirectory() || '不能是文件夹！'
         } catch (error) {
-          return '文件目录不存在！'
+          return '文件不存在！'
         }
       }
     })
@@ -43,7 +39,7 @@ module.exports = options => {
     Q.push({
       type: 'input',
       name: 'local',
-      message: "打包生成资源目录，相对当前工作空间（/）。（只能使用相对目录）",
+      message: "打包生成资源目录，相对当前工作空间。（只能使用相对目录）",
       validate: answers => {
         return (answers && !path.isAbsolute(answers)) || '只能使用相对目录'
       }
