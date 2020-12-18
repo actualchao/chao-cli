@@ -1,0 +1,6 @@
+{
+  "vw-app": {
+    "repository": "ssh://git@git.citycloud.com.cn:3022/cgyykf-one/vue-app-vw-template.git",
+    "description": "this is a app template width VW Adaptive solution"
+  }
+}
