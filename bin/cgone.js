@@ -27,11 +27,11 @@ program
   .option('-h, --hostname <hostname>', '主机名')
   .option('-p, --port <port>', '端口（默认 22 ）')
   .option('-u, --user <user>', '用户名（默认 root ）')
-  .option('-i, --Identity <user>', 'IdentityFIle 密钥文件路径')
+  .option('-i, --identity <user>', 'IdentityFIle 密钥文件路径')
   .option('-l, --local <localPath>', '本地目录地址')
   .option('-r, --remote <remotePath>', '上传到的远程服务目录地址')
   .action((cmd) => {
-    console.log(cleanArgs(cmd));
+    require('../src/packages/deploy/index')(cleanArgs(cmd))
   })
 
 
