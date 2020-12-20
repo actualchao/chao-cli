@@ -2,9 +2,20 @@ const chalk = require('chalk')
 const path = require('path')
 
 module.exports = options => {
-  const { hostname, port, user, identity, local, remote } = options
+  const { hostname, identity, local, remote, script } = options
 
   const Q = []
+
+
+  if (!script) {
+    const choices = require('./getLocalBuildScript')()
+    Q.push({
+      type: 'list',
+      name: 'script',
+      message: "选择打包命令，会列出包含 build 字符的所有命令",
+      choices
+    })
+  }
 
   if (!hostname) {
     Q.push({
@@ -22,7 +33,7 @@ module.exports = options => {
     Q.push({
       type: 'input',
       name: 'identity',
-      message: `密钥路径，(可以使用绝对路径,使用绝对路径密钥会被拷贝到当前工作目录下的 ${chalk.green('.deploy.private')} 目录中)`,
+      message: `密钥路径，(如使用绝对路径,密钥被拷到当前工作空间 ${chalk.green('.deploy.private')})`,
       validate: async answers => {
         try {
           let res = await require('fs').statSync(path.resolve(answers))
@@ -45,6 +56,7 @@ module.exports = options => {
       }
     })
   }
+
   if (!remote) {
     Q.push({
       type: 'input',
