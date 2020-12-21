@@ -28,13 +28,8 @@ module.exports = async function publishFlow (preOptions) {
     options = Object.assign(options, configAnwsers)
   }
 
-<<<<<<< HEAD
-  let { hostname, port, user, identity, local, remote, script } = options
-  options = { hostname, port, user, identity, local, remote, script }
-=======
   let { hostname, port, user, identity, local, remote, script, usePassword } = options
   options = { hostname, port, user, identity, local, remote, script, usePassword }
->>>>>>> develop
 
   if (Q) {
     const { writeFile } = await prompt({ type: 'confirm', name: 'writeFile', message: `是否将以上配置更新写入到项目 ${chalk.green(defaultConfigFile)} 中` })
