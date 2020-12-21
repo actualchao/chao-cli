@@ -31,7 +31,7 @@ module.exports = async function publishFlow (preOptions) {
     options = Object.assign(options, configAnwsers)
   }
 
-  const { hostname, port, user, identity, local, remote, script } = options
+  let { hostname, port, user, identity, local, remote, script } = options
   options = { hostname, port, user, identity, local, remote, script }
 
   if (Q) {
