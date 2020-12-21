@@ -43,11 +43,9 @@ cgone init [app-name]
 # 发布到服务器
 cgone deploy
 
-# 帮助文档
+# 命令行帮助
 cgone deploy --help
 ```
-
-
 
 
 ### 配置方式
@@ -75,13 +73,13 @@ cgone deploy --help
 
 
 ### options
-- [hostname](####hostname)
-- [port](####port)
-- [user](####user)
-- [identity](####identity)
-- [local](####local)
-- [remote](####remote)
-- [script](####script)
+- [hostname](#hostname)
+- [port](#port)
+- [user](#user)
+- [identity](#identity)
+- [local](#local)
+- [remote](#remote)
+- [script](#script)
 
 #### hostname
 
@@ -114,3 +112,8 @@ cgone deploy --help
 
 
 打包命令会筛选出项目中 `package.json` 中包含 `build` 字符的所有命令以供选择。
+
+
+#### usePassword
+
+是否使用密码登录服务器

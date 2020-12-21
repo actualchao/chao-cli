@@ -31,7 +31,9 @@ program
   .option('-l, --local <localPath>', '本地目录地址')
   .option('-r, --remote <remotePath>', '上传到的远程服务目录地址')
   .option('-s, --script <script>', '打包命令')
+  .option('--usePassword', '使用密码登陆')
   .action((cmd) => {
+    console.log(cleanArgs(cmd));
     require('../src/packages/deploy/index')(cleanArgs(cmd))
   })
 
