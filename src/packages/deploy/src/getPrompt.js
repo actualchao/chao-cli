@@ -2,7 +2,7 @@ const chalk = require('chalk')
 const path = require('path')
 
 module.exports = options => {
-  const { hostname, identity, local, remote, script } = options
+  const { hostname, identity, local, remote, script, usePassword } = options
 
   const Q = []
 
@@ -29,20 +29,30 @@ module.exports = options => {
     })
   }
 
-  if (!identity) {
-    Q.push({
-      type: 'input',
-      name: 'identity',
-      message: `密钥路径，(如使用绝对路径,密钥被拷到当前工作空间 ${chalk.green('.deploy.private')})`,
-      validate: async answers => {
-        try {
-          let res = await require('fs').statSync(path.resolve(answers))
-          return !res.isDirectory() || '不能是文件夹！'
-        } catch (error) {
-          return '文件不存在！'
+  if (!usePassword && !identity) {
+    Q.push(
+      {
+        type: 'confirm',
+        name: 'usePassword',
+        message: '是否使用密码登陆'
+      },
+      {
+        type: 'input',
+        name: 'identity',
+        message: `密钥路径，(如使用绝对路径,密钥被拷到当前工作空间 ${chalk.green('.deploy.private')})`,
+        when: function (answers) {
+          return !answers.usePassword
+        },
+        validate: async answers => {
+          try {
+            let res = await require('fs').statSync(path.resolve(answers))
+            return !res.isDirectory() || '不能是文件夹！'
+          } catch (error) {
+            return '文件不存在！'
+          }
         }
       }
-    })
+    )
   }
 
 

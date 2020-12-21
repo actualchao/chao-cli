@@ -8,9 +8,6 @@ const prompt = require('inquirer').createPromptModule({ output: process.stderr }
 
 const defaultOptions = { user: 'root', port: '22' }
 
-async function execaStdio () {
-  return await execa(...arguments, { cwd: process.cwd(), stdio: 'inherit' })
-}
 
 const defaultConfigFile = '.deploy.json'
 const defaultPrivateFile = '.deploy.private'
@@ -31,8 +28,13 @@ module.exports = async function publishFlow (preOptions) {
     options = Object.assign(options, configAnwsers)
   }
 
+<<<<<<< HEAD
   let { hostname, port, user, identity, local, remote, script } = options
   options = { hostname, port, user, identity, local, remote, script }
+=======
+  let { hostname, port, user, identity, local, remote, script, usePassword } = options
+  options = { hostname, port, user, identity, local, remote, script, usePassword }
+>>>>>>> develop
 
   if (Q) {
     const { writeFile } = await prompt({ type: 'confirm', name: 'writeFile', message: `是否将以上配置更新写入到项目 ${chalk.green(defaultConfigFile)} 中` })
@@ -49,23 +51,40 @@ module.exports = async function publishFlow (preOptions) {
     }
   }
 
-  const server = `${user}@${hostname}`
-  const indenityArg = ['-i', path.resolve(identity)]
 
-  async function sshExeca (command, args, stdio = 'inherit') {
-    return await execa('ssh', [server, ...indenityArg, command, ...args], { cwd: process.cwd(), stdio })
+  const { NodeSSH } = require('node-ssh')
+  const ssh = new NodeSSH()
+
+  const sshConfig = {
+    host: hostname,
+    port: port,
+    username: user
+  }
+
+
+  if (usePassword) {
+    const { password } = await prompt({
+      type: 'password',
+      message: 'Enter service password',
+      name: 'password',
+      mask: '*',
+    })
+    sshConfig.password = password
+  } else {
+    sshConfig.privateKey = fs.readFileSync(path.resolve(identity), 'utf8')
   }
 
   try {
-    let res = await sshExeca('echo', ['login successed'], 'pipe')
+    utils.log('配置成功,开始测试连接服务器!')
+    await ssh.connect(sshConfig)
     utils.log(chalk.green('test login server successed!!!'));
   } catch (error) {
     utils.log(chalk.red('连接服务器失败，请检查配置'));
+    console.log(error);
     process.exit(1)
   }
 
-
-  await execaStdio('npm', ['run', script])
+  await execa('npm', ['run', script], { stdio: 'inherit' })
 
   const absoluteLocaPath = path.resolve(local)
 
@@ -74,41 +93,62 @@ module.exports = async function publishFlow (preOptions) {
     const distIsFine = distDir && distDir.isDirectory()
     if (distIsFine) {
       utils.log(chalk.green('local dist directore is fine, waiting upload'));
+    } else {
+      utils.log(chalk.red('检查配置的 local 和 打包生成的目录是否一致'));
+      process.exit(1)
     }
   } catch (error) {
     utils.log(chalk.red('检查配置的 local 和 打包生成的目录是否一致'));
+    process.exit(1)
   }
 
   const backDir1 = remote + '.bak'
-  try {
-    await sshExeca('mkdir', ['backDir1'], 'pipe')
-    // await execa('ssh', [server, ...indenityArg, 'mkdir', backDir1])
-    utils.log(chalk.green('创建备份文件夹成功！备份文件夹是：'), chalk.yellow(backDir1));
-  } catch (error) {
-    utils.log(chalk.green('已存在备份文件夹：'), chalk.yellow(backDir1));
-  }
+
 
   try {
-    await sshExeca('cd', [remote], 'pipe')
-    // await execa('ssh', [server, ...indenityArg, 'cd', remote])
+    await ssh.mkdir(backDir1)
+    utils.log(chalk.green('创建备份文件夹成功！备份文件夹是：'), chalk.yellow(backDir1));
+  } catch (error) { }
+
+
+  try {
+    await ssh.exec('cd', [remote])
     const backDir2 = `${backDir1}/${require('../../utils/index').format(new Date(), 'yyyy-MM-dd_hh:mm:ss')}`
     console.log();
     console.log(`${chalk.green('备份远程仓库')}  ${chalk.yellow(remote)}  到 ${chalk.yellow(backDir2)}`);
-    await sshExeca('mv', ['-f', remote, backDir2], 'pipe')
-    // await execa('ssh', [server, ...indenityArg, 'mv', '-f', remote, backDir2])
+    await ssh.exec('mv', ['-f', remote, backDir2])
     console.log(chalk.green('备份完成，备份地址：' + chalk.yellow(backDir2)))
   } catch (error) {
-    console.log();
-    await sshExeca('rm', ['-rf', remote], 'pipe')
-    // await execa('ssh', [server, ...indenityArg, 'rm', '-rf', remote])
-    console.log(chalk.green('当前没有已存在的该资源目录，可以上传！'));
+    await ssh.exec('rm', ['-rf', remote])
+    console.log(chalk.green('当前没有已存在的该资源目录，不需要备份'));
   }
 
   utils.log(chalk.green('开始上传资源！'));
 
-  await execaStdio('scp', ['-r', ...indenityArg, absoluteLocaPath, `${server}:${remote}`])
 
-  await sshExeca('chmod', ['-R', '755', remote], 'pipe')
-  // await execa('ssh', [server, ...indenityArg, 'chmod', '-R', '755', remote])
-  utils.log(chalk.green('upload successed'), 'check you service everything is Ok!!');
+  let uploadHasError = false
+  let errorPath = []
+  await ssh.putDirectory(absoluteLocaPath, remote, {
+    tick: (lp, rp, err) => {
+      const upath = lp.substring(absoluteLocaPath.length)
+      if (err) {
+        uploadHasError = true
+        errorPath.push(upath)
+      } else {
+        console.log(chalk.green(`      ${upath}`));
+      }
+    }
+  })
+
+  if (uploadHasError) {
+    utils.log(chalk.red('下列资源上传发生问题:'))
+    errorPath.forEach(item => {
+      console.log(chalk.red(`      ${item}`));
+    })
+  } else {
+    // await ssh.exec('chmod', ['-R', '755', remote])
+    utils.log(chalk.green('upload successed'), 'check you service everything is Ok!!');
+  }
+
+  ssh.dispose()
 } 
