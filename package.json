@@ -19,7 +19,8 @@
   "keywords": [
     "cli",
     "select",
-    "template"
+    "template",
+    "deploy"
   ],
   "bin": {
     "cgone": "bin/cgone.js"
