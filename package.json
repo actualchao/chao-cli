@@ -1,6 +1,6 @@
 {
   "name": "cgone-template-cli",
-  "version": "2.0.2",
+  "version": "2.0.3",
   "description": "城管应用开发一部项目模版搭建脚手架",
   "main": "index.js",
   "scripts": {
