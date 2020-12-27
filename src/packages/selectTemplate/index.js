@@ -9,9 +9,6 @@ const chalk = require('chalk');
 
 const prompt = inquirer.createPromptModule({ output: process.stderr })
 
-console.log(process.argv);
-
-
 module.exports = function selectTemplate (N) {
   return new Promise(async (resolve) => {
 
@@ -24,7 +21,7 @@ module.exports = function selectTemplate (N) {
     await fs.remove(tmpdir)
 
     await new Promise((resolve, reject) => {
-      download('direct:ssh://git@git.citycloud.com.cn:3022/cgyykf-one/chao-cli.git#config', tmpdir, { clone: true }, err => {
+      download('actualchao/chao-cli#config', tmpdir, { clone: true }, err => {
         if (err) return reject(err)
         resolve()
       })
