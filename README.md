@@ -3,7 +3,7 @@
 
 ```sh
 # 全局安装
-npm i -g chao-cli
+npm i -g wujc-cli
 ```
 
 # commands
