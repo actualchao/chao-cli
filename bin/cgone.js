@@ -8,7 +8,7 @@ program.version(PACKAGE.version)
 
 program.on('--help', () => {
   console.log()
-  console.log(`  Run ${chalk.cyan(`cgone <command> --help`)} for detailed usage of given command.`)
+  console.log(`  Run ${chalk.cyan(`chao <command> --help`)} for detailed usage of given command.`)
   console.log()
 })
 

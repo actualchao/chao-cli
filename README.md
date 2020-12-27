@@ -3,7 +3,7 @@
 
 ```sh
 # 全局安装
-npm i -g cgone-template-cli
+npm i -g chao-cli
 ```
 
 # commands
@@ -20,7 +20,7 @@ npm i -g cgone-template-cli
 ### 运行命令
 ```sh
 # 按照模板初始化项目
-cgone init [app-name]
+chao init [app-name]
 ```
 
 
@@ -41,16 +41,16 @@ cgone init [app-name]
 
 ```sh
 # 发布到服务器
-cgone deploy
+chao deploy
 
 # 命令行帮助
-cgone deploy --help
+chao deploy --help
 ```
 
 
 ### 配置方式
 - `.deploy.json` 配置文件配置
-- 命令行参数配置,运行 `cgone deploy --help` 查看详细
+- 命令行参数配置,运行 `chao deploy --help` 查看详细
 - 命令行交互询问式配置，在本地配置和命令行参数配置合并后仍然缺少配置的时候启动交互
 
 交互询问配置方式会在最后提示是否需要将配置写入配置文件中。

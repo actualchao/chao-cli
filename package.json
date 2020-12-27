@@ -1,7 +1,7 @@
 {
-  "name": "cgone-template-cli",
-  "version": "2.0.3",
-  "description": "城管应用开发一部项目模版搭建脚手架",
+  "name": "chao-cli",
+  "version": "1.0.0",
+  "description": "模版搭建脚手架",
   "main": "index.js",
   "scripts": {
     "build": "echo \"Error: no test specified\" && exit 1"
@@ -24,7 +24,7 @@
     "deploy"
   ],
   "bin": {
-    "cgone": "bin/cgone.js"
+    "chao": "bin/chao.js"
   },
   "devDependencies": {
     "cz-conventional-changelog": "^3.3.0"

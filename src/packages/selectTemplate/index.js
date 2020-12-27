@@ -15,7 +15,7 @@ console.log(process.argv);
 module.exports = function selectTemplate (N) {
   return new Promise(async (resolve) => {
 
-    const tmpdir = path.join(os.tmpdir(), 'cgone', 'config')
+    const tmpdir = path.join(os.tmpdir(), 'chao', 'config')
 
     console.log(chalk.green('开始下载模版配置config'));
 
@@ -24,7 +24,7 @@ module.exports = function selectTemplate (N) {
     await fs.remove(tmpdir)
 
     await new Promise((resolve, reject) => {
-      download('direct:ssh://git@git.citycloud.com.cn:3022/cgyykf-one/cgone-template-cli.git#config', tmpdir, { clone: true }, err => {
+      download('direct:ssh://git@git.citycloud.com.cn:3022/cgyykf-one/chao-cli.git#config', tmpdir, { clone: true }, err => {
         if (err) return reject(err)
         resolve()
       })
